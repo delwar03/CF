@@ -2,21 +2,30 @@
 #define int long long
 #define endl '\n'
 using namespace std;
-const int mod = 1e9 + 7;
+const int mod = 998244353;
 const int N = 3e5 + 10;
 const int INF = 1e15 + 10;
 
+
 void solve() {
     int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
+    map<int, int> freq;
+    for(int i = 0; i < n; i++) {
         int x; cin>>x;
-        mp[x - i]++;
+        freq[x]++;
     }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
+    int ans = 0, cnt = 0;
+    auto it = freq.begin();
+    for(; it != freq.end(); it++) {
+        int x = it->second;
+        ++it;
+        int y = 0;
+        if(it != freq.end()) y = it->second;
+        --it;
+        cnt += x;
+        ans += x * (x - 1) * (x - 2) / 6;
+        ans += cnt * y * (y - 1) / 2;
+        
     }
     cout<<ans<<endl;
 }
@@ -34,6 +43,6 @@ signed main() {
 }
  
 /*
-i/p:  
+i/p: 
 o/p: 
 */ 

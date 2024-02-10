@@ -2,23 +2,19 @@
 #define int long long
 #define endl '\n'
 using namespace std;
-const int mod = 1e9 + 7;
+const int mod = 998244353;
 const int N = 3e5 + 10;
 const int INF = 1e15 + 10;
 
 void solve() {
-    int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        mp[x - i]++;
+    int a, b, c; cin>>a>>b>>c;
+    // int x = (b + c - 1) / c;
+    int ans = a;
+    while(1) {
+        ans += c;
+        if(ans > a + b) {cout<<ans<<endl; return;}
     }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
-    }
-    cout<<ans<<endl;
+    // cout<<a + c<<endl;
 }
 
 signed main() {
@@ -28,7 +24,7 @@ signed main() {
 
     int t = 1, c = 1; cin>>t;
     while(t--) {
-        // cout<<"Case "<<c++<<": ";
+        cout<<"Case "<<c++<<": ";
         solve();
     }
 }

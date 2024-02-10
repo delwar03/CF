@@ -8,17 +8,16 @@ const int INF = 1e15 + 10;
 
 void solve() {
     int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        mp[x - i]++;
+    string s; cin>>s;
+    int f = -1, b = -1;
+    for(int i = 0; i < n; i++) {
+        if(s[i] == 'B') {
+            if(f == -1) f = i;
+            b = i;
+        }
     }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
-    }
-    cout<<ans<<endl;
+    if(f == -1) cout<<"0"<<endl;
+    else cout<<b - f + 1<<endl;
 }
 
 signed main() {

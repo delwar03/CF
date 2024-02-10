@@ -7,18 +7,23 @@ const int N = 3e5 + 10;
 const int INF = 1e15 + 10;
 
 void solve() {
-    int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
+    int n, k; cin>>n>>k;
+    vector<int> cnt(64);
+    for(int i = 0; i < n; i++) {
         int x; cin>>x;
-        mp[x - i]++;
+        int ind = 0;
+        while(x) {
+            cnt[ind++] += x % k;
+            x /= k;
+        }
     }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
+    for(int i = 0; i < 64; i++) {
+        if(cnt[i] > 1) {
+            cout<<"NO"<<endl;
+            return;
+        }
     }
-    cout<<ans<<endl;
+    cout<<"YES"<<endl;
 }
 
 signed main() {

@@ -1,0 +1,33 @@
+{
+	"folders": [
+		{
+			"name": "Java",
+			"path": "../../Java"
+		},
+		{
+			"name": "CF",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"vector": "cpp",
+			"ios": "cpp",
+			"xiosbase": "cpp",
+			"deque": "cpp",
+			"list": "cpp",
+			"xstring": "cpp",
+			"bitset": "cpp",
+			"initializer_list": "cpp",
+			"queue": "cpp",
+			"stack": "cpp",
+			"type_traits": "cpp",
+			"xhash": "cpp",
+			"xtree": "cpp",
+			"xutility": "cpp",
+			"cstdlib": "cpp",
+			"algorithm": "cpp",
+			"set": "cpp"
+		}
+	}
+}

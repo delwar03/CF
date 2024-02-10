@@ -3,22 +3,21 @@
 #define endl '\n'
 using namespace std;
 const int mod = 1e9 + 7;
-const int N = 3e5 + 10;
+const int N = 2e5 + 10;
 const int INF = 1e15 + 10;
 
 void solve() {
     int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
+    vector<vector<int>> a;
+    vector<int> b(n);
+    for(int i = 0; i < n; i++) {
         int x; cin>>x;
-        mp[x - i]++;
+        a.push_back({x, i});
     }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
-    }
-    cout<<ans<<endl;
+    for(auto &x : b) cin>>x;
+    sort(a.begin(), a.end());
+    for(auto it : a) cout<<it[0]<<" "; cout<<endl;
+    for(auto it : a) cout<<b[it[1]]<<" "; cout<<endl;
 }
 
 signed main() {
@@ -29,11 +28,13 @@ signed main() {
     int t = 1, c = 1; cin>>t;
     while(t--) {
         // cout<<"Case "<<c++<<": ";
+        // cout<<"Scenario #"<<c++<<":\n";
         solve();
     }
+    return 0;
 }
  
 /*
-i/p:  
+i/p: 
 o/p: 
-*/ 
+*/

@@ -8,15 +8,17 @@ const int INF = 1e15 + 10;
 
 void solve() {
     int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        mp[x - i]++;
-    }
+    vector<int> a(n), b(n);
+    for(auto &x : a) cin>>x;
+    for(auto &x : b) cin>>x;
     int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
+    for(int i = 0; i < n; i++) {
+        int x = 0, y = 0;
+        for(int j = i; j < n; j++) {
+            if(a[j - i] != b[j]) x++;
+            if(b[j - i] != a[j]) y++;
+        }
+        ans = max(ans, max(x, y));
     }
     cout<<ans<<endl;
 }
@@ -34,6 +36,6 @@ signed main() {
 }
  
 /*
-i/p:  
+i/p: 
 o/p: 
 */ 

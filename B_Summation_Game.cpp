@@ -7,16 +7,20 @@ const int N = 3e5 + 10;
 const int INF = 1e15 + 10;
 
 void solve() {
-    int n; cin>>n;
-    map<int, int> mp;
+    int n, k, x; cin>>n>>k>>x;
+    int sum = 0;
+    vector<int> v(n);
+    for(auto &x : v) {cin>>x; sum += x;}
+    sort(v.begin(), v.end());
+    vector<int> pref(n + 1);
     for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        mp[x - i]++;
+        pref[i] += pref[i - 1] + v[i - 1];
     }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
+    int ans = -INF;
+    for(int i = 0; i <= k; i++) {
+        int tmp = - pref[n - i] + 2 * pref[max(0LL, n - x - i)];
+
+        ans = max(ans, tmp);
     }
     cout<<ans<<endl;
 }
@@ -34,6 +38,6 @@ signed main() {
 }
  
 /*
-i/p:  
+i/p: 
 o/p: 
 */ 

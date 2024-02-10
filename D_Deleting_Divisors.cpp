@@ -8,17 +8,20 @@ const int INF = 1e15 + 10;
 
 void solve() {
     int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        mp[x - i]++;
+    if(n & 1) {
+        cout<<"Bob"<<endl;
+    } else {
+        if(n & (n - 1)) { // not power of `2`
+            cout<<"Alice"<<endl;
+        } else { // power of `2`
+            int pow = __lg(n);
+            if(pow & 1) {
+                cout<<"Bob"<<endl;
+            } else {
+                cout<<"Alice"<<endl;
+            }
+        }
     }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
-    }
-    cout<<ans<<endl;
 }
 
 signed main() {

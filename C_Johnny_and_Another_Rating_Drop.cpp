@@ -8,15 +8,13 @@ const int INF = 1e15 + 10;
 
 void solve() {
     int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        mp[x - i]++;
-    }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
+    int ans = 0, val = 1, ind = 0;
+    while(n) {
+        if(n & 1)
+            ans += val;
+            
+        val = 2 * val + 1;
+        n >>= 1;
     }
     cout<<ans<<endl;
 }

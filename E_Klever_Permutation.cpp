@@ -7,18 +7,18 @@ const int N = 3e5 + 10;
 const int INF = 1e15 + 10;
 
 void solve() {
-    int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        mp[x - i]++;
+    int n, k; cin>>n>>k;
+    vector<int> v(n);
+    int a = 1, b = n;
+    for(int j = 0; j < k; j++) {
+        for(int i = 0; i < n  / k + 1; i++) {
+            if(i * k + j < n) {
+                if(j % 2 == 0) v[i * k + j] = a++;
+                else v[i * k + j] = b--;
+            }
+        }
     }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
-    }
-    cout<<ans<<endl;
+    for(auto it : v) cout<<it<<" "; cout<<endl;
 }
 
 signed main() {

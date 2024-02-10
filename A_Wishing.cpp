@@ -2,23 +2,23 @@
 #define int long long
 #define endl '\n'
 using namespace std;
-const int mod = 1e9 + 7;
+const int M = 998244353;
 const int N = 3e5 + 10;
 const int INF = 1e15 + 10;
 
+int binPow(int a, int b) {
+    int res = 1;
+    while(b) {
+        if(b & 1) res = (res * a);
+        a = (a * a);
+        b >>= 1;
+    }
+    return res;
+}
+
 void solve() {
     int n; cin>>n;
-    map<int, int> mp;
-    for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        mp[x - i]++;
-    }
-    int ans = 0;
-    for(auto it : mp) {
-        int cnt = it.second;
-        ans += cnt * (cnt - 1) / 2;
-    }
-    cout<<ans<<endl;
+    cout<<binPow(2, n)<<endl;
 }
 
 signed main() {
@@ -26,7 +26,7 @@ signed main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int t = 1, c = 1; cin>>t;
+    int t = 1, c = 1; //cin>>t;
     while(t--) {
         // cout<<"Case "<<c++<<": ";
         solve();

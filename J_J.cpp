@@ -6,18 +6,23 @@ const int mod = 1e9 + 7;
 const int N = 2e5 + 10;
 const int INF = 1e15 + 10;
 
+
 void solve() {
-    int n; cin>>n;
-    vector<int> v(n);
-    for(auto &x : v) cin>>x;
-    int ans = 1, tmp = v[0];
-    for(int i = 1; i < n; i++) {
-        if(v[i] > tmp) {
-            if(tmp == i) ans++;
-            tmp = v[i];
-        }
+    int n, m; cin>>n>>m;
+    vector<int> a(n), b(m);
+    for(auto &x : a) cin>>x;
+    for(auto &x : b) cin>>x;
+
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end());
+    int i = 0, j = 0;
+    while(i < n && j < m) {
+        if(a[i] < b[j]) i++;
+        else j++;
     }
-    cout<<ans<<endl;
+    if(i == n && j == m) cout<<"uncertain"<<endl;
+    else if(i == n) cout<<"MechaGodzilla"<<endl;
+    else cout<<"Godzilla"<<endl;
 }
 
 signed main() {
@@ -28,13 +33,11 @@ signed main() {
     int t = 1, c = 1; cin>>t;
     while(t--) {
         // cout<<"Case "<<c++<<": ";
-        // cout<<"Scenario #"<<c++<<":\n";
         solve();
     }
-    return 0;
 }
  
 /*
 i/p: 
 o/p: 
-*/
+*/ 
