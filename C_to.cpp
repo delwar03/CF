@@ -3,7 +3,7 @@
 #define endl '\n'
 using namespace std;
 const int M = 998244353;
-const int N = 3e5 + 10;
+const int N = 4e6 + 10;
 const int INF = 1e15 + 10;
 
 int binPow(int a, int b) {
@@ -50,21 +50,16 @@ bool isSquare(int n) {
 void solve() {
     int n; cin>>n;
     string s; cin>>s;
-    vector<int> v(n);
-    map<int, int> mp;
-
-    for(int i = 0; i < n; i++) v[i] = i;
-    int ans = 0;
-    do {
-        int sum = 0, ind = binPow(10, n - 1);
-        for(int i = 0; i < n; i++) {
-            cout<<v[i]<<" ";
-            sum += (s[v[i]] - '0') * ind;
-            ind /= 10;
-        }
-        cout<<endl;
-        if(isSquare(sum) && mp.find(sum) == mp.end()) {ans++; mp[sum] = 1;}
-    } while(next_permutation(v.begin(), v.end()));
+    sort(s.begin(), s.end());
+    int ans = 0, i = 0;
+    while(1) {
+        string str = to_string(i * i);
+        if(str.size() > n) break;
+        while(str.size() < n) str += "0";
+        sort(str.begin(), str.end());
+        if(str == s) ans++;
+        i++;
+    }
     cout<<ans<<endl;
 }
 

@@ -1,146 +1,71 @@
-#include <bits/stdc++.h>
-#define int long long
-#define endl '\n'
+#include<bits/stdc++.h>
 using namespace std;
-const int mod = 1e9 + 7;
-const int N = 3e5 + 10;
-const int INF = 1e15 + 10;
-
-class SGTree {
-
-public:
-    vector<int> seg, lazy;
-    
-    SGTree(int n) {
-        seg.resize(4 * n + 1);
-        lazy.resize(4 * n + 1);
+string s;
+int a[100005],seg[4*100005];
+void build (int ind,int low,int high)
+ {
+    if (low==high) 
+    {
+        seg[ind]=s[low-1]-'0'; return;
     }
+    int mid=(low+high)/2;
+    build (2*ind ,low ,mid);
+    build (2*ind+1,mid+1,high);
+    seg[ind]=seg[2*ind]+seg[2*ind+1];
+ }
+ int sm;
+ int query (int ind ,int low ,int high,int l)
+  {
+    if (l<=low && l>=high)
+     { 
+        sm+=seg[ind];
+        return sm;
+     }
+    if (l<low ||l>high) return 0;
+     sm+=seg[ind];
+    int mid=(low+high)/2;
+     int left=   query(2*ind ,low ,mid,l);
+     int right=  query (2*ind+1,mid+1,high,l);
+     return  sm=left+right;
 
-    void build(int ind, int low, int high, vector<int> &a) {
-        if(low == high) {
-            seg[ind] = a[low];
-            return;
-        }
+  }
+void update (int ind,int low,int high,int l,int r) {
 
-        int mid = low + (high - low) / 2;
-        build(2 * ind + 1, low, mid, a);
-        build(2 * ind + 2, mid + 1, high, a);
+    if (r<low  || high<l) return ;
+    if (l<=low && high<=r) { seg[ind]++; return;}
 
-        // When returning from funcion call update SegTree
-        seg[ind] = seg[2 * ind + 1] + seg[2 * ind + 2];
-    }
-
-    void update(int ind, int low, int high, int l, int r, int val) {
-
-        // Upadate the previous remaining updates
-        // and propagate downwards
-        if(lazy[ind] != 0) {
-            seg[ind] += lazy[ind];
-            // Propagaate the lazy updates downward
-            // for the remainng nodes to be updated
-            if(high != low) {
-                lazy[2 * ind + 1] += lazy[ind];
-                lazy[2 * ind + 2] += lazy[ind];
-            }
-            lazy[ind] = 0;
-        }
-
-        // No overlap [l r low high] or [low high l r]
-        if(l > high || r < low) return;
-
-        // Complete overlap [l low high r]
-        if(l <= low && r >= high) {
-            seg[ind] += val;
-
-            // If children exixts
-            if(high != low) {
-                lazy[2 * ind + 1] += val;
-                lazy[2 * ind + 2] += val;
-            }
-            return;
-        }
-
-        // Partial overlap
-        int mid = low + (high - low) / 2;
-        update(2 * ind + 1, low, mid, l, r, val);
-        update(2 * ind + 2, mid + 1, high, l, r, val);
-        
-        seg[ind] = seg[2 * ind + 1] + seg[2 * ind + 2];
-    }
-
-
-    int query(int ind, int low, int high, int l, int r) {
-
-        // If Upadates is remaining
-        // Upadate it!!!
-        if(lazy[ind] != 0) {
-            seg[ind] += lazy[ind];
-            // If children exists propagate downwards
-            if(high != low) {
-                lazy[2 * ind + 1] += lazy[ind];
-                lazy[2 * ind + 2] += lazy[ind];
-            }
-            lazy[ind] = 0;
-        }
-
-        // No Overleap
-        // [low high] [l r] or [l r] [low high]
-        // Should not contribute in our Answer
-        if(l > high || r < low) return 0;
-
-        // Complete Overleap
-        // [l low high r]
-        else if(l <= low && r >= high) return seg[ind];
-
-        // Partial Overleap
-        // Go left + Go right
-        int mid = low + (high - low) / 2;
-        int left = query(2 * ind + 1, low, mid, l, r);
-        int right = query(2 * ind + 2, mid + 1, high, l, r);
-        return left + right;
-    }
-};
-
-void solve() {
-    string s; cin>>s;
-    int n = s.size();
-    vector<int> v(n);
-    for(int i = 0; i < n; i++) {
-        if(s[i] == '1') v[i] = 1;
-    }
-    SGTree sg(n);
-    sg.build(0, 0, n - 1, v);
-
-    int q; cin>>q;
-    while(q--) {
-        char ch; cin>>ch;
-        if(ch == 'I') {
-            int l, r; cin>>l>>r;
-            l--; r--;
-            sg.update(0, 0, n - 1, l, r, 1);
-        } else {
-            int idx; cin>>idx;
-            idx--;
-            int val = sg.query(0, 0, n - 1, 0, idx);
-            if(idx > 0) val -= sg.query(0, 0, n - 1, 0, idx - 1);
-            cout<<val % 2<<endl;
-        }
-    }
-}
+    int mid=(low+high)/2;
+    update(2*ind ,low ,mid,l,r);
+    update (2*ind+1,mid+1,high,l,r );
+}   
 
 signed main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
 
-    int t = 1, c = 1; cin>>t;
-    while(t--) {
-        cout<<"Case "<<c++<<": "<<endl;;
-        solve();
-    }
+    int cs=1;
+    int t;cin>>t;
+    while (t--) {
+        memset (seg ,0,sizeof(seg));
+         
+        cin>>s;
+        int q;cin>>q;
+        cout<<"Case "<<cs++<<":"<<"\n";
+      
+        while (q--) {
+            char c; cin>>c;
+            if (c == 'I') {
+                int x, y; cin>>x>>y;
+                update (1,1,s.size(),x,y);
+            } else {
+                int x; cin>>x;
+                sm=0;
+                int ans=query (1,1,s.size(),x);
+                if (ans%2==0) cout<<s[x-1]<<"\n";
+                else {
+                    if (s[x-1]=='1') cout<<0<<"\n";
+                    else cout<<1<<"\n";
+                }
+            }
+        }
+   }
+     
 }
- 
-/*
-i/p:  
-o/p: 
-*/ 

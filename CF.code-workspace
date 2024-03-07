@@ -1,8 +1,16 @@
 {
 	"folders": [
 		{
+			"name": "Python",
+			"path": "../../Python"
+		},
+		{
 			"name": "Java",
 			"path": "../../Java"
+		},
+		{
+			"name": "Topic",
+			"path": "../Topic"
 		},
 		{
 			"name": "CF",
@@ -27,7 +35,18 @@
 			"xutility": "cpp",
 			"cstdlib": "cpp",
 			"algorithm": "cpp",
-			"set": "cpp"
+			"set": "cpp",
+			"limits": "cpp",
+			"utility": "cpp",
+			"xlocale": "cpp",
+			"unordered_map": "cpp",
+			"atomic": "cpp",
+			"system_error": "cpp",
+			"ostream": "cpp",
+			"array": "cpp",
+			"chrono": "cpp",
+			"format": "cpp",
+			"forward_list": "cpp"
 		}
 	}
 }

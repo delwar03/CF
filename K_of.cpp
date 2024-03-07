@@ -3,7 +3,7 @@
 #define endl '\n'
 using namespace std;
 const int M = 998244353;
-const int N = 3e5 + 10;
+const int N = 4e6 + 10;
 const int INF = 1e15 + 10;
 
 int binPow(int a, int b) {
@@ -42,21 +42,23 @@ bool isPalin(string s) {
     return true;
 }
 
+bool isSquare(int n) {
+    int root = sqrtl(n);
+    return root * root == n;
+}
+
+int notDivisible(int n, int c, int d) {
+    int res = n;
+    int lcm = (c * d) / __gcd(c, d);
+    res -= n / c;
+    res -= n / d;
+    res += n / lcm;
+    return res;
+}
+
 void solve() {
-    int n; cin>>n;
-    vector<int> v(n), freq(n);
-    for(int i = 0; i < n; i++) {
-        cin>>v[i];
-        v[i] = (v[i] - i + n) % n;
-        for(int j = -1; j <= 1; j++) {
-            freq[(v[i] + j + n) % n]++;
-        }
-    }
-    int ans = 0;
-    for(auto it : freq) {
-        ans = max(ans, it);
-    }
-    cout<<ans<<endl;
+    int a, b, c, d; cin>>a>>b>>c>>d;
+    cout<<notDivisible(b, c, d) - notDivisible(a - 1, c, d)<<endl;
 }
 
 signed main() {

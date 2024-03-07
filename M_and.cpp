@@ -5,6 +5,7 @@ using namespace std;
 const int M = 998244353;
 const int N = 3e5 + 10;
 const int INF = 1e15 + 10;
+int n, s;
 
 int binPow(int a, int b) {
     int res = 1;
@@ -42,21 +43,34 @@ bool isPalin(string s) {
     return true;
 }
 
+bool isPossible(int x, vector<int>& v) {
+    int cnt = 1, temp = v[0];
+    for(int i = 1; i < n; i++) {
+        if(v[i] - temp >= x) {
+            temp = v[i];
+            cnt++;
+        }
+        if(cnt == s) return true;
+    }
+    return false;
+}
+
 void solve() {
-    int n, s; cin>>n>>s;
+    cin>>n>>s;
     vector<int> v(n);
     for(int i = 0; i < n; i++) cin>>v[i];
     sort(v.begin(), v.end());
-    int di = (n + s - 1) / s;
-    // cout<<di<<endl;
-    int mn = INF;
-    for(int i = di; i < n; i += di) {
-        if(1 || i + di < n) mn = min(mn, v[i] - v[i - di]);
-        else {
-            if(i != n - 1) mn = min(mn, v[n - 1] - v[i]);
+    int l = 0, r = INF, ans = 0;
+    while(l <= r) {
+        int mid = (l + r) >> 1;
+        if(isPossible(mid, v)) {
+            ans = mid;
+            l = mid + 1;
+        } else {
+            r = mid - 1;
         }
     }
-    cout<<mn<<endl;
+    cout<<ans<<endl;
 }
 
 signed main() {
