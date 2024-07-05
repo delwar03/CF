@@ -16,10 +16,11 @@ void solve() {
         while(s.back() == '0') cnt++, s.pop_back();
         pq.push(cnt);
     }
-    int i = 1;
+    int f = 1;
     while(pq.size()) {
-        if(i++ & 1) tot -= pq.top();
+        if(f) tot -= pq.top();
         pq.pop();
+        f ^= 1;
     }
     if(tot > m) cout<<"Sasha"<<endl;
     else cout<<"Anna"<<endl;

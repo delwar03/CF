@@ -1,6 +1,10 @@
 {
 	"folders": [
 		{
+			"name": "CF",
+			"path": "."
+		},
+		{
 			"name": "Python",
 			"path": "../../Python"
 		},
@@ -11,10 +15,6 @@
 		{
 			"name": "Topic",
 			"path": "../Topic"
-		},
-		{
-			"name": "CF",
-			"path": "."
 		}
 	],
 	"settings": {
@@ -46,7 +46,8 @@
 			"array": "cpp",
 			"chrono": "cpp",
 			"format": "cpp",
-			"forward_list": "cpp"
+			"forward_list": "cpp",
+			"random": "cpp"
 		}
 	}
 }
