@@ -8,23 +8,23 @@ const int INF = 1e18 + 10;
 
 void solve() {
     int n; cin>>n;
-    vector<int> cnt(n + 1, 0);
+    vector<int> freq(n + 1);
     for(int i = 0; i < n; i++) {
         int x; cin>>x;
-        cnt[x]++;
+        freq[x]++;
     }
+
     vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
 
-    function<int(int, int)> magic = [&] (int ind, int tot) {
+    function<int(int, int)> magic = [&] (int cur, int tot) {
+        if(cur == n + 1) return 0LL;
+        int &ans = dp[cur][tot];
+        if(~ans) return ans;
 
-        if(ind > n) return 0LL;
+        ans = INF;
 
-        int &ans = dp[ind][tot];
-        if(!!~ans) return ans;
-
-        ans = 1 + magic(ind + 1, tot + 1);
-        if(tot >= cnt[ind])
-            ans = min(ans, magic(ind + 1, tot - cnt[ind]));
+        if(freq[cur]) ans = min(ans, 1 + magic(cur + 1, tot + 1));
+        if(tot >= freq[cur]) ans = min(ans, magic(cur + 1, tot - freq[cur]));
 
         return ans;
     };

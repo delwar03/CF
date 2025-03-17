@@ -2,31 +2,56 @@
 #define int long long
 #define endl '\n'
 using namespace std;
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+// using namespace __gnu_pbds;
+// template <typename T> using o_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 const int M = 1e9 + 7;
-const int N = 1e5 + 10;
+const int N = 1e6 + 10;
 const int INF = 1e15 + 10;
 
 void solve() {
-    int n; cin>>n;
-    vector<int> v(n + 1, 0), pos(n + 1, 0);
-    for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        pos[x] = i;
-        v[i] = x;
+    int n, q; cin>>n>>q;
+    string a, b; cin>>a>>b;
+
+    map<char, vector<int>> mp1, mp2;
+
+    vector<int> v(n + 1, 0);
+
+    for(char ch = 'a'; ch <= 'z'; ch++) {
+        mp1[ch] = mp2[ch] = v;
     }
-    vector<vector<int>> ans;
+
     for(int i = 1; i <= n; i++) {
-        
-        if(pos[i] != i) {
-            ans.push_back({i, pos[i]});
-            pos[v[i]] = pos[i];
-            v[pos[i]] = v[i];
-            pos[i] = i;
-            v[i] = i;
+        mp1[a[i - 1]][i] = 1;
+    }
+    for(int i = 1; i <= n; i++) {
+        mp2[b[i - 1]][i] = 1;
+    }
+
+    for(char ch = 'a'; ch <= 'z'; ch++) {
+        for(int i = 1; i <= n; i++) {
+            mp1[ch][i] += mp1[ch][i - 1];
+            mp2[ch][i] += mp2[ch][i - 1];
         }
     }
-    cout<<ans.size()<<endl;
-    for(auto it : ans) cout<<it[0]<<" "<<it[1]<<endl;
+
+    // for(auto it : mp1) {
+    //     cerr<<it.first<<" -> ";
+    //     for(auto x : it.second) cerr<<x<<" "; cerr<<endl;
+    // }
+
+    while(q--) {
+        int l, r; cin>>l>>r;
+        // --l; --r;
+        int cnt = 0;
+        for(char ch = 'a'; ch <= 'z'; ch++) {
+            int left = mp1[ch][r] - mp1[ch][l - 1];
+            int right = mp2[ch][r] - mp2[ch][l - 1];
+            cnt += abs(right - left);
+        }
+        cout<<cnt / 2<<endl;
+    }
 }
 
 signed main() {
@@ -34,14 +59,14 @@ signed main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int t = 1, c = 1; //cin>>t;
+    int t = 1, c = 1; cin>>t;
     while(t--) {
-        // cout<<"Case "<<c++<<": "<<endl;
+        // cerr<<"Case "<<c++<<": \n";
         solve();
     }
 }
- 
+
 /*
-i/p:  
+i/p: 
 o/p: 
-*/ 
+*/

@@ -8,23 +8,23 @@ const int INF = 1e18 + 10;
 
 void solve() {
     int n; cin>>n;
-    vector<int> v(n + 1), ind(n + 1);
+    vector<int> v(n + 1), ind(n + 1, -1);
 
     for(int i = 2; i <= n; i++) {
         cout<<"XOR "<<1<<" "<<i<<endl;
         cin>>v[i];
     }
 
-    int j = 0, k = 0;
+    int j = -1, k = -1;
     for(int i = 2; i <= n; i++) {
-        if(ind[v[i]] != 0) {
+        if(~ind[v[i]]) {
             j = ind[v[i]];
             k = i;
         }
         ind[v[i]] = i;
     }
 
-    if(j) {
+    if(~j) {
         cout<<"AND "<<j<<" "<<k<<endl;
         int val; cin>>val;
         v[1] = v[j] ^ val;
@@ -32,7 +32,7 @@ void solve() {
     } else {
 
         for(int i = 2; i <= n; i++) {
-            if(ind[v[i] ^ (n - 1)] != 0) {
+            if(~ind[v[i] ^ (n - 1)]) {
                 j = i;
                 k = ind[v[i] ^ (n - 1)];
                 break;

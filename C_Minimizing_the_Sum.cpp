@@ -13,6 +13,7 @@ void solve() {
     for(int i = 1; i <= n; i++) {
         cin>>v[i];
     }
+    
     vector<vector<int>> dp(n + 1, vector<int>(k + 1, -1));
 
     function<int(int, int)> magic = [&] (int ind, int k) {

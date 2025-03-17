@@ -1,79 +1,66 @@
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template <typename T> using o_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define int long long
 #define endl '\n'
+#define F first
+#define S second
+#define pii pair<int, int>
+#define sz(x) (int) x.size()
 using namespace std;
-const int M = 1e9 + 7;
-const int N = 3e5 + 10;
-int n, m;
-vector<int> g[N];
-
-vector<int> getTopoSort() {
-    vector<int> indegree(n + 1, 0);
-    for(int i = 1; i <= n; i++) {
-        for(auto child : g[i]) {
-            indegree[child]++;
-        }
-    }
-    queue<int> q;
-    for(int i = 1; i <= n; i++) {
-        if(indegree[i] == 0) q.push(i);
-    }
-    vector<int> topo;
-    while(!q.empty()) {
-        if(q.size() > 1) return {};
-        int node = q.front();
-        q.pop();
-        topo.push_back(node);
-        for(auto child : g[node]) {
-            indegree[child]--;
-            if(indegree[child] == 0) {
-                q.push(child);
-            }
-        }
-    }
-    return topo;
-}
+const int mod = 1e9 + 7;
+const int N = 2e5 + 10;
+const int INF = 1e18 + 10;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve() {
-    cin>>n>>m;
-    set<int> nodes;
+    int n, m; cin>>n>>m;
+    vector<int> g[n + 1], indeg(n + 1);
     for(int i = 0; i < m; i++) {
         int u, v; cin>>u>>v;
+        indeg[v]++;
         g[u].push_back(v);
-        nodes.insert(u);
-        nodes.insert(v);
+        g[v].push_back(u);
     }
-    vector<int> topo = getTopoSort();
-    if(topo.size() == nodes.size()) {
-        cout<<"Yes"<<endl;
-        vector<int> ans(n);
-        int val = 1;
-        for(auto it : topo) {
-            ans[it - 1] = val++;
-        }
-        for(int i = 0; i < n; i++) {
-            if(val > n) break;
-            if(ans[i] == 0) ans[i] = val++;
-        }
-        for(auto it : ans) cout<<it<<" "; cout<<endl;
+
+    queue<int> q;
+    for(int i = 1; i <= n; i++) {
+        if(indeg[i] == 0) q.push(i);
     }
-    else cout<<"No"<<endl;
-    for(int i = 0; i <= n; i++) g[i].clear();
+
+    vector<int> ord;
+
+    while(q.size()) {
+        if(sz(q) > 1) {cout<<"No"<<endl; return; }
+        int u = q.front(); q.pop();
+        ord.push_back(u);
+        int cnt = 0;
+        for(auto v : g[u]) {
+            indeg[v]--;
+            if(indeg[v] == 0) q.push(v), cnt++;
+        }
+    }
+
+    cout<<"Yes"<<endl;
+    vector<int> ans(n + 1);
+    int x = 1;
+    for(auto i : ord) ans[i] = x++;
+    for(int i = 1; i <= n; i++) {
+        if(ans[i] == 0) ans[i] = x++;
+    }
+
+    for(int i = 1; i <= n; i++) cout<<ans[i]<<" "; cout<<endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    cout.tie(NULL);
 
     int t = 1, c = 1; //cin>>t;
     while(t--) {
-        // cout<<"Case "<<c++<<": ";
+        // cerr<<"Case "<<c++<<": \n";
         solve();
     }
 }
- 
-/*
-i/p:  
-o/p: 
-*/ 

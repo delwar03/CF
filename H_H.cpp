@@ -1,48 +1,46 @@
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template <typename T> using o_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define int long long
 #define endl '\n'
+#define F first
+#define S second
+#define pii pair<int, int>
+#define sz(x) (int) x.size()
 using namespace std;
 const int mod = 1e9 + 7;
 const int N = 2e5 + 10;
-const int INF = 1e15 + 10;
-
-int f(int b, vector<int> v) {
-    int n = v.size();
-    int res = 0;
-    for(int i = 0; i < n; i++) {
-        res += abs(v[i] - (b + i + 1));
-    }
-    return res;
-}
+const int INF = 1e18 + 10;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve() {
     int n; cin>>n;
-    vector<int> v;
-    for(int i = 1; i <= n; i++) {
-        int x; cin>>x;
-        v.push_back(x);
+    vector<int> v(n);
+    for(auto &x : v) cin>>x;
+
+    int mx = 0, mxVal = 0;
+
+    for(int i = 2; i <= 1000; i++) {
+        int cnt = 0;
+        for(int x : v) cnt += (x % i == 0);
+        if(cnt > mx) {
+            mx = cnt;
+            mxVal = i;
+        }
     }
-    int hi = 0, lo = 0;
-    for(int i = 1; i < n; i++) {
-        if(v[i] > v[i - 1]) hi++;
-        if(v[i] < v[i - 1]) lo++;
-    }
-    cout<<hi<<" "<<lo<<endl;
+
+    cout<<mxVal<<endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    cout.tie(NULL);
 
-    int t = 1, c = 1; cin>>t;
+    int t = 1, c = 1; //cin>>t;
     while(t--) {
-        cout<<"Case "<<c++<<": ";
+        // cerr<<"Case "<<c++<<": \n";
         solve();
     }
 }
- 
-/*
-i/p: 
-o/p: 
-*/ 

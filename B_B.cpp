@@ -1,54 +1,53 @@
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template <typename T> using o_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define int long long
 #define endl '\n'
+#define F first
+#define S second
+#define pii pair<int, int>
+#define sz(x) (int) x.size()
 using namespace std;
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
-// using namespace __gnu_pbds;
-// template <typename T> using o_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-// o_st.find_by_order(k) return kth element. 0 indexed.
-// o_st.order_of_key(k) returns count of elements strictly less than k.
-const int M = 1e9 + 7;
-const int N = 1e6;
-const int INF = 1e15 + 10;
-vector<int> dp(N, INF);
+const int mod = 1e9 + 7;
+const int N = 2e5 + 10;
+const int INF = 1e18 + 10;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve() {
     int n; cin>>n;
-    int ans = 0, f = 0;
-    if(n >= N) {
-        int cnt = (n - N) / 15 + 5;
-        n -= cnt * 15;
-        ans = cnt;
+    vector<int> A(n), B(n);
+    for(auto &x : A) cin>>x;
+    for(auto &x : B) cin>>x;
+
+    vector<int> ord(n);
+    iota(ord.begin(), ord.end(), 0LL);
+    sort(ord.begin(), ord.end(), [&] (int i, int j) {
+        if(A[i] != A[j]) return A[i] > A[j];
+        return B[i] < B[j];
+    });
+
+    o_set<pii> st;
+    int ans = 0;
+
+    for(int i = 0; i < n; i++) {
+        int j = i;
+        while(j < n && A[ord[j]] == A[ord[i]] && B[ord[j]] == B[ord[i]]) st.insert({B[ord[j]], j}), j++;
+        ans += (j - i) * st.order_of_key({B[ord[i]], n});
+        i = j - 1;
     }
-    ans += dp[n];
+
     cout<<ans<<endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    cout.tie(NULL);
-    
-    vector<int> coins = {1, 3, 6, 10, 15};
-    dp[0] = 0;
-    for(int i = 0; i < N; i++) {
-        for(auto it : coins) {
-            if(i + it < N) {
-                dp[i + it] = min(dp[i + it], dp[i] + 1);
-            }
-        }
-    }
-    // for(auto it : dp) cout<<it<<endl;
 
-    int t = 1, c = 1; cin>>t;
+    int t = 1, c = 1; //cin>>t;
     while(t--) {
-        // cout<<"Case "<<c++<<": "<<endl;
+        // cerr<<"Case "<<c++<<": \n";
         solve();
     }
 }
- 
-/*
-i/p:  
-o/p: 
-*/ 

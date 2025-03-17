@@ -13,7 +13,7 @@ void solve() {
     for(int i = 1; i <= n; i++) {
         cin>>v[i];
         pref[i] = pref[i - 1] + v[i];
-        diff[i] = (v[i] != v[i - 1]) + diff[i - 1];
+        diff[i] = diff[i - 1] + (v[i] != v[i - 1]);
     }
 
     // cout<<"v: ";
@@ -45,7 +45,7 @@ void solve() {
         l = i + 1, r = n;
         while(l <= r) {
             int mid = (l + r) / 2;
-            int sum = pref[mid] - pref[i];
+            int sum = pref[mid] - pref[i + 1 - 1];
             bool hobe = (diff[mid] - diff[i + 1]) > 0;
             if(sum > v[i] && hobe) {
                 // cout<<sum<<" "<<hobe<<endl;
@@ -56,10 +56,12 @@ void solve() {
             }
         }
     }
+
+
     for(int i = 1; i <= n; i++) {
-        if(ans[i] == INF) cout<<-1<<" \n"[i == n];
-        else cout<<ans[i]<<" \n"[i == n];
+        cout<<(ans[i] == INF ? -1 : ans[i])<<" \n"[i == n];
     }
+    
 }
 
 signed main() {
