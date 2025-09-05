@@ -15,22 +15,23 @@ const int N = 2e5 + 10;
 const int INF = 1e18 + 10;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+int n, k;
+
+pii magic(int n) {
+    if(n < k) return {0, 0};
+    int m = (1 + n) >> 1;
+    if(n & 1) {
+        auto [sm, ct] = magic(m - 1);
+        return {m + sm + sm + ct * m, 2 * ct + 1};
+    } else {
+        auto [sm, ct] = magic(m);
+        return {sm + sm + ct * m, 2 * ct};
+    }
+}
+
 void solve() {
-    int n, k; cin>>n>>k;
-
-    function<pii(int)> magic = [&] (int n) {
-        if(n < k) return pii(0LL, 0LL);
-        int m = (1 + n) >> 1;
-        if(n & 1) {
-            auto [sm, ct] = magic(m - 1);
-            return pii(sm + sm + (ct + 1) * m, 2 * ct + 1);
-        } else {
-            auto [sm, ct] = magic(m);
-            return pii(sm + sm + ct * m, 2 * ct);
-        }
-    };
-
-    cout<<magic(n).F<<endl;
+    cin >> n >> k;
+    cout << magic(n).F << endl;
 }
 
 signed main() {

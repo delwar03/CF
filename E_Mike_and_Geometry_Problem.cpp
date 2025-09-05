@@ -17,25 +17,18 @@ int nCr(int n, int r) {
 }
 
 void solve() {
-    int n, k; cin>>n>>k;
+    int n, k; cin >> n >> k;
     map<int, int> mp;
-    for(int i = 0; i < n; i++) {
-        int l, r; cin>>l>>r;
-        mp[l]++, mp[r + 1]--;
+    for(int i = 0, l, r; i < n; i++) cin >> l >> r, mp[l]++, mp[r + 1]--;
+    int ans = 0, pf = 0;
+    for(auto [a, b] : mp) {
+        pf += b;
+        auto it = mp.upper_bound(a);
+        (ans += nCr(pf, k) * (it == mp.end() ? 0 : it->F - a)) %= mod;
+        b = pf;
     }
 
-    vector<int> cur;
-    for(auto it : mp) cur.push_back(it.first);
-    int ans = 0, cnt = 0;
-
-    for(int i = 0; i < (int) cur.size() - 1; i++) {
-        cnt += mp[cur[i]];
-        if(cnt >= k)
-            ans += (nCr(cnt, k) * (cur[i + 1] - cur[i])) % mod;
-        ans %= mod;
-    }
-
-    cout<<ans<<endl;
+    cout << ans << endl;
 }
 
 signed main() {

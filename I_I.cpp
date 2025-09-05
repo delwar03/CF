@@ -3,95 +3,58 @@
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
 template <typename T> using o_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-#define int long long
+// #define int int64_t
 #define endl '\n'
 #define F first
 #define S second
 #define pii pair<int, int>
 #define sz(x) (int) x.size()
 using namespace std;
-const int mod = 1e9 + 7;
+const int mod = 100000007;
 const int N = 2e5 + 10;
 const int INF = 1e18 + 10;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+int binPow(int a, int b) {
+    int ret = 1;
+    while(b > 0) {
+        if(b & 1) ret = 1LL * ret * a % mod;
+        a = 1LL * a * a % mod;
+        b >>= 1;
+    }
+    return ret;
+}
+
 void solve() {
-    int n, q; cin>>n>>q;
-    vector<int> v(n + 1);
-    for(int i = 1; i <= n; i++) cin>>v[i];
-    vector<pii> que[n + 1];
-    for(int i = 0; i < q; i++) {
-        int l, r; cin>>l>>r;
-        que[l].push_back({r, i});
-    }
+    int n, m; cin >> n >> m;
+    vector<int> a(n + 1), b(1024);
+    
+    for(int i = 1; i <= n; i++) cin >> a[i];
+    for(int i = 1, x; i <= m; i++) cin >> x, b[x] = 1;
 
-    vector<int> pf(n + 1);
-    for(int i = 1; i <= n; i++) pf[i] = pf[i - 1] + v[i];
-
-    vector<int> BIT(n + 1);
-
-    auto add = [&] (int x, int val) {
-        for(int i = x; i <= n; i += i & -i) BIT[i] += val;
-    };
-
-    auto sum = [&] (int x) {
-        int ret = 0;
-        for(int i = x; i; i -= i & -i) ret += BIT[i];
-        return ret;
-    };
-
-    auto qur = [&] (int l, int r) {
-        if(l > r) return 0LL;
-        return sum(r) - sum(l - 1);
-    };
-
-    auto upd = [&] (int i, int val) {
-        add(i, val - qur(i, i));
-    };
-
-    vector<int> ans(q);
-
-    vector<pii> stk;
-    for(int i = n; i > 0; i--) {
-        while(sz(stk) && stk.back().F <= v[i]) {
-            upd(sz(stk), 0);
-            stk.pop_back();
-        }
-
-        int len = (sz(stk) ? stk.back().S : n) - i;
-        stk.push_back({v[i], i});
-        add(sz(stk), len * v[i]);
-
-        for(auto [r, id] : que[i]) {
-            int lo = 0, hi = sz(stk) - 1, best = -1;
-            while(lo <= hi) {
-                int mid = lo + hi >> 1;
-                if(stk[mid].S <= r) {
-                    best = mid;
-                    hi = mid - 1;
-                } else {
-                    lo = mid + 1;
-                }
-            }
-
-            int cur = qur(best + 2, sz(stk));
-            cur += (r - stk[best].S + 1) * stk[best].F;
-            cur -= (pf[r] - pf[i - 1]);
-
-            ans[id] = cur;
+    vector<vector<int>> dp(n + 1, vector<int>(1024, 0));
+    dp[0][0] = 1;
+    for(int i = 1; i <= n; i++) {
+        for(int j = 0; j < 1024; j++) {
+            dp[i][j] = (1LL * dp[i][j] + dp[i - 1][j]) % mod;
+            dp[i][j] = (1LL * dp[i][j] + dp[i - 1][j ^ a[i]]) % mod;
         }
     }
 
-    for(auto x : ans) cout<<x<<endl;
+    int ans = binPow(2, n);
+    for(int i = 0; i < 1024; i++) if(b[i]) {
+        ans = (1LL * ans - dp[n][i] + mod) % mod;
+    }
+    cout << ans << endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int t = 1, c = 1; //cin>>t;
-    while(t--) {
-        // cerr<<"Case "<<c++<<": \n";
+    int t = 1; cin>>t;
+    for(int tc = 1; tc <= t; tc++) {
+        cout<<"Case "<<tc<<": ";
         solve();
     }
 }

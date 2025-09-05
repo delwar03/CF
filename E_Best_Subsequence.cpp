@@ -1,7 +1,4 @@
 #include <bits/stdc++.h>
-// #pragma GCC optimize("Ofast")
-// #pragma GCC optimize ("unroll-loops")
-// #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
@@ -18,71 +15,79 @@ const int N = 2e5 + 10;
 const int INF = 1e18 + 10;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+struct Node {
+    int u, v, cap, flow = 0;
+};
+
 void solve() {
     int n; cin>>n;
     vector<int> v(n);
     for(auto &x : v) cin>>x;
-    int sz = n + 62;
-    int s = sz + 5, t = s + 1;
-    vector<int> g[sz + 10];
 
-    vector<vector<int>> cap(sz + 10, vector<int>(sz + 10));
+    int sz = n + 70, s = sz - 1, t = sz - 2;
+    vector<int> g[sz];
+    vector<Node> edges;
+    int id = 0;
 
     auto addEdge = [&] (int u, int v, int c) {
-        g[u].push_back(v);
-        g[v].push_back(u);
-        cap[u][v] += c;
+        edges.push_back({u, v, c});
+        edges.push_back({v, u, 0});
+        g[u].push_back(id);
+        g[v].push_back(id + 1);
+        id += 2;
+        return id - 2;
     };
 
     for(int i = 0; i < n; i++) {
         addEdge(s, i, +1);
-        for(int j = 62; j >= 0; j--) if(v[i] >> j & 1) {
-            addEdge(i, n + j, +1);
-        }
+        for(int j = 62; j >= 0; j--) if(v[i] >> j & 1) addEdge(i, n + j, +1);
     }
+    for(int i = 0; i < 62; i++) addEdge(n + i, t, +1);
 
-    for(int j = 62; j >= 0; j--) {
-        addEdge(n + j, t, +1);
-    }
+    auto getFlow = [&] (int s, int t) {
+        vector<int> dep, ptr;
 
-    vector<int> par;
-
-    auto bfs = [&] () {
-        par = vector<int>(sz + 10, -1);
-        par[s] = 0;
-        queue<pair<int, int>> q;
-        q.push({s, INF});
-        while(!q.empty()) {
-            auto [u, f] = q.front();
-            q.pop();
-            for(auto v : g[u]) {
-                if(par[v] == -1 && cap[u][v] > 0) {
-                    par[v] = u;
-                    int ff = min(f, cap[u][v]);
-                    if(v == t) return ff;
-                    q.push({v, ff});
+        function<int(int, int)> dfs = [&] (int u, int f) {
+            if(f == 0 || u == t) return f;
+            for(int &i = ptr[u]; i < sz(g[u]); i++) {
+                int id = g[u][i], v = edges[id].v;
+                if(dep[v] != 1 + dep[u]) continue;
+                int cur = dfs(v, min(f, edges[id].cap - edges[id].flow));
+                if(cur > 0) {
+                    edges[id].flow += cur;
+                    edges[id ^ 1].flow -= cur;
+                    return cur;
                 }
             }
+            return 0LL;
+        };
+
+        auto bfs = [&] {
+            dep = vector<int>(sz, -1);
+            queue<int> q;
+            q.push(s);
+            dep[s] = 0;
+            while(sz(q)) {
+                int u = q.front(); q.pop();
+                for(int id : g[u]) {
+                    int v = edges[id].v;
+                    if(edges[id].cap == edges[id].flow || dep[v] != -1) continue;
+                    dep[v] = 1 + dep[u];
+                    q.push(v);
+                }
+            }
+            return dep[t] != -1;
+        };
+
+        int flow = 0;
+        while(bfs()) {
+            ptr = vector<int>(sz, 0);
+            while(int f = dfs(s, INF)) flow += f;
         }
-        return 0LL;
+        return flow;
     };
 
-    int flow = 0;
-
-    while(int cur = bfs()) {
-        flow += cur;
-        int tmp = t;
-        while(tmp != s) {
-            int prv = par[tmp];
-            cap[prv][tmp] -= cur;
-            cap[tmp][prv] += cur;
-            tmp = prv;
-        }
-    }
-
-    // cerr<<flow<<endl;
-
-    cout<<n - flow<<endl;
+    cout<<n - getFlow(s, t)<<endl;
 }
 
 signed main() {

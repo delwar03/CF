@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
-#define int long long
+#define int int64_t
 #define endl '\n'
+#define pii pair<int, int>
+#define sz(x) int(x.size())
 using namespace std;
 const int mod = 998244353;
 const int N = 3e5 + 10;
@@ -14,27 +16,20 @@ int nCr(int n, int r) {
 }
 
 void solve() {
-    int n, k; cin>>n>>k;
-    vector<pair<int, int>> v;
-    for(int i = 0; i < n; i++) {
-        int l, r; cin>>l>>r;
-        v.push_back({l, 0});
-        v.push_back({r, 1});
-    }
-
+    int n, k; cin >> n >> k;
+    vector<pii> v(n);
+    for(auto &[l, r] : v) cin >> l >> r;
     sort(v.begin(), v.end());
 
-    int ans = 0, cnt = 0;
-    for(auto it : v) {
-        if(it.second == 0) {
-            if(cnt >= k - 1)
-                ans += nCr(cnt, k - 1), ans %= mod;
-            cnt++;
-        } else {
-            cnt--;
-        }
+    multiset<int> st;
+    int ans = 0;
+    for(auto [l, r] : v) {
+        while(sz(st) && *st.begin() < l) st.erase(st.begin());
+        st.insert(r);
+        (ans += nCr(sz(st) - 1, k - 1)) %= mod;
     }
-    cout<<ans<<endl;
+
+    cout << ans << endl;
 }
 
 signed main() {

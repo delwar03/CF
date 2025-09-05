@@ -1,93 +1,66 @@
 #include <bits/stdc++.h>
-#define int long long
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template <typename T> using o_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+#define int int64_t
 #define endl '\n'
+#define F first
+#define S second
+#define pii pair<int, int>
+#define sz(x) (int) x.size()
 using namespace std;
 const int mod = 998244353;
 const int N = 2e5 + 10;
 const int INF = 1e18 + 10;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int dp[20][1040][2]; // (ind, mask, tight)
-int ndp[20][1040][2]; // (ind, mask, tight)
-int pwr[25];
+int l, r, k, cc, pw[62];
+pii dp[62][1024][2];
+int vis[62][1024][2];
+string s;
+
+pii magic(int ind, int mask, int less) { // {cnt, sm}
+    if(ind == -1) return {__builtin_popcountll(mask) <= k, 0};
+    auto &[a, b] = dp[ind][mask][less];
+    if(vis[ind][mask][less] == cc) return {a, b};
+    a = b = 0;
+    int mx = less ? 9 : s[ind] - '0';
+    
+    for(int d = 0; d <= mx; d++) {
+        auto [cnt, sm] = magic(ind - 1, !mask && !d ? mask : mask | (1LL << d), less | (d < mx));
+        (a += cnt) %= mod;
+        (b += sm) %= mod;
+        (b += (d * pw[ind] % mod) * cnt % mod) %= mod;
+    }
+    vis[ind][mask][less] = cc;
+    return {a, b};
+}
+
+int get(int n) {
+    s = to_string(n);
+    reverse(s.begin(), s.end());
+    cc++;
+    return magic(sz(s) - 1, 0, 0).S;
+}
 
 void solve() {
-    int l, r, k; cin>>l>>r>>k;
-    string s;
-    int sz;
+    cin>>l>>r>>k;
 
-    function<int(int, int, int)> func = [&] (int ind, int mask, int tight) {
-
-        if(ind == sz) return (int) (__builtin_popcount(mask) <= k);
-
-        int &ans = ndp[ind][mask][tight];
-        if(~ans) return ans;
-
-        ans = 0;
-        int mx = tight ? s[ind] - '0' : 9;
-
-        for(int i = 0; i <= mx; i++) {
-            ans += func(ind + 1, (i == 0 && !mask) ? mask : mask | (1LL << i), tight & (i == mx));
-            ans %= mod;
-        }
-
-        return ans;
-    };
-
-    function<int(int, int, int)> magic = [&] (int ind, int mask, int tight) {
-
-        if(ind == sz) return 0LL;
-
-        int &ans = dp[ind][mask][tight];
-        if(~ans) return ans;
-
-        ans = 0;
-        int mx = tight ? s[ind] - '0' : 9;
-
-        for(int i = 0; i <= mx && __builtin_popcount(mask) <= k; i++) {
-
-            int val = (i * pwr[sz - 1 - ind]) % mod;
-            
-            int cnt = func(ind + 1, (i == 0 && !mask) ? mask : mask | (1LL << i), tight & (i == mx));
-
-            ans += (val * cnt) % mod + magic(ind + 1, (i == 0 && !mask) ? mask : mask | (1LL << i), tight & (i == mx));
-            ans %= mod;
-        }
-
-        return ans;
-    };
-
-    auto sum = [&] (int x) {
-        s = to_string(x);
-        sz = s.size();
-        int ans = 0;
-        memset(dp, -1, sizeof dp);
-        memset(ndp, -1, sizeof ndp);
-        ans += magic(0, 0, 1); // (ind, mask, tight)
-        return ans;
-    };
-
-    cout<<(sum(r) - sum(l - 1)+ mod) % mod<<endl;
+    int ans = (get(r) - get(l - 1) + mod) % mod;
+    cout<<ans<<endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    cout.tie(NULL);
 
-    pwr[0] = 1;
+    pw[0] = 1;
+    for(int i = 1; i < 62; i++) pw[i] = (pw[i - 1] * 10) % mod;
 
-    for(int i = 1; i < 25; i++) {
-        pwr[i] = (pwr[i - 1] * 10) % mod;
-    }
-
-    int t = 1, c = 1; //cin>>t;
-    while(t--) {
-        // cerr<<"Case "<<c++<<": \n";
+    int t = 1; //cin>>t;
+    for(int tc = 1; tc <= t; tc++) {
+        // cerr<<"Case "<<tc<<": \n";
         solve();
     }
 }
-
-/*
-i/p: 
-o/p: 
-*/

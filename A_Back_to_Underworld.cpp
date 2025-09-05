@@ -49,8 +49,6 @@ void solve() {
             col[0] = col[1] = 0;
             dfs(i);
             ans += max(col[0], col[1]);
-            // cout<<col.size()<<endl;
-            // for(auto it : col) cout<<it<<" "; cout<<endl;
         }
     }
     cout<<ans<<endl;

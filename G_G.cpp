@@ -3,7 +3,7 @@
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
 template <typename T> using o_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-#define int long long
+#define int int64_t
 #define endl '\n'
 #define F first
 #define S second
@@ -16,34 +16,37 @@ const int INF = 1e18 + 10;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve() {
-    int n; cin>>n;
-    vector<int> v(n);
-    for(auto &x : v) cin>>x;
+    int n; cin >> n;
+    vector<array<int, 4>> v(n);
+    for(auto &[cx, cy, tx, ty] : v) cin >> cx >> cy >> tx >> ty;
 
-    vector<int> col(n, -1);
-    o_set<pii> st;
-    int ans = 0, mn = INF;
-    for(int i = 0; i < n; i++) {
-        if(!sz(st) || (*st.begin()).F >= v[i]) {
-            st.insert({v[i], ans++});
-        } else {
-            auto it = st.lower_bound({v[i], 0});
-            if(it != st.begin()) --it;
-            st.erase(it);
-            st.insert({max(v[i], (*it).F), (*it).S});
+    vector<int> ord(n);
+    iota(ord.begin(), ord.end(), 0LL);
+
+    int ans = INF;
+    do {
+        int cur = 0, x = 0, y = 0;
+        for(int i : ord) {
+            cur += abs(x - v[i][2]) + abs(y - v[i][3]);
+            x = v[i][2], y = v[i][3];
+            cur += abs(x - v[i][0]) + abs(y - v[i][1]);
+            x = v[i][0], y = v[i][1];
         }
-    }
+        // cur += abs(x) + abs(y);
+        cerr << "cur: " << cur << endl;
+        ans = min(ans, cur);
+    } while(next_permutation(ord.begin(), ord.end()));
 
-    cout<<ans<<endl;
+    cout << ans << endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int t = 1, c = 1; //cin>>t;
-    while(t--) {
-        // cerr<<"Case "<<c++<<": \n";
+    int t = 1; cin>>t;
+    for(int tc = 1; tc <= t; tc++) {
+        // cerr<<"Case "<<tc<<": \n";
         solve();
     }
 }

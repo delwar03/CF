@@ -3,7 +3,7 @@
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
 template <typename T> using o_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-#define int long long
+#define int int64_t
 #define endl '\n'
 #define F first
 #define S second
@@ -16,38 +16,57 @@ const int INF = 1e18 + 10;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve() {
-    int n; cin>>n;
-    vector<int> A(n), B(n);
-    for(auto &x : A) cin>>x;
-    for(auto &x : B) cin>>x;
+    int k, n, m; cin >> k >> n >> m;
+    vector<int> a(n), b(m);
+    for(auto &x : a) cin >> x;
+    for(auto &x : b) cin >> x;
 
-    vector<int> ord(n);
-    iota(ord.begin(), ord.end(), 0LL);
-    sort(ord.begin(), ord.end(), [&] (int i, int j) {
-        if(A[i] != A[j]) return A[i] > A[j];
-        return B[i] < B[j];
-    });
-
-    o_set<pii> st;
-    int ans = 0;
-
+    vector<int> pos[2], neg[2];
     for(int i = 0; i < n; i++) {
-        int j = i;
-        while(j < n && A[ord[j]] == A[ord[i]] && B[ord[j]] == B[ord[i]]) st.insert({B[ord[j]], j}), j++;
-        ans += (j - i) * st.order_of_key({B[ord[i]], n});
-        i = j - 1;
+        if(a[i] >= 0) pos[0].emplace_back(a[i]);
+        else neg[0].emplace_back(-a[i]);
+    }
+    for(int i = 0; i < m; i++) {
+        if(b[i] >= 0) pos[1].emplace_back(b[i]);
+        else neg[1].emplace_back(-b[i]);
     }
 
-    cout<<ans<<endl;
+    for(int i : {0, 1}) {
+        sort(pos[i].rbegin(), pos[i].rend());
+        sort(neg[i].rbegin(), neg[i].rend());
+    }
+
+    vector<int> cur;
+    for(int i = 0; i < min(sz(pos[0]), sz(pos[1])); i++) {
+        cur.push_back(pos[0][i] * pos[1][i]);
+    }
+    for(int i = 0; i < min(sz(neg[0]), sz(neg[1])); i++) {
+        cur.push_back(neg[0][i] * neg[1][i]);
+    }
+
+    if(sz(cur) < k) {
+        int rem = k - sz(cur), id1 = sz(pos[0]) > sz(pos[1]) ? 0 : 1, id2 = sz(neg[0]) > sz(neg[1]) ? 0 : 1;
+        sort(pos[id1].begin(), pos[id1].end());
+        sort(neg[id2].begin(), neg[id2].end());
+        for(int i = 0; i < rem; i++) {
+            cur.push_back(pos[id1][i] * -neg[id2][rem - i - 1]);
+        }
+    }
+
+    int ans = 0;
+    sort(cur.rbegin(), cur.rend());
+    for(int i = 0; i < k; i++) ans += cur[i];
+    
+    cout << ans << endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int t = 1, c = 1; //cin>>t;
-    while(t--) {
-        // cerr<<"Case "<<c++<<": \n";
+    int t = 1; // cin>>t;
+    for(int tc = 1; tc <= t; tc++) {
+        // cerr<<"Case "<<tc<<": \n";
         solve();
     }
 }

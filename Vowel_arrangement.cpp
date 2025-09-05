@@ -1,62 +1,64 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-// #define int long long
 #define endl "\n"
 #define F first
 #define S second
 #define pii pair<int, int>
 #define sz(x) (int) (x.size())
 
-
-// #include<ext/pb_ds/assoc_container.hpp>
-// #include<ext/pb_ds/tree_policy.hpp>
-// using namespace __gnu_pbds;
-
-// template<typename T> using o_set = tree<T, null_type, std::less<T>, 
-// rb_tree_tag, tree_order_statistics_node_update>;
-
-string tmp = "aeiou";
-map<char, int> mp;
-
-
-const int N = 2e5 + 10;
+const int N = 1e5 + 10;
 const int mod = 1e9 + 7;
-const int INF = 1e9 + 10;
+const int INF = 1e18 + 10;
 
+int n;
+string s;
+int dp[N][35][10];
 
-void solve() {
-    int n; cin>>n;
-    string s; cin>>s;
-    mp['a'] = 0;
-    mp['e'] = 1;
-    mp['i'] = 2;
-    mp['o'] = 3;
-    mp['u'] = 4;
-    vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(35, vector<int>(6, INF)));
+int mp(char ch) {
+    if(ch == 'a') return 0;
+    if(ch == 'e') return 1;
+    if(ch == 'i') return 2;
+    if(ch == 'o') return 3;
+    if(ch == 'u') return 4;
+    else assert(false);
+}
 
-    for(int i = 0; i < 32; i++) for(int j = 0; j <= 5; j++) dp[n][i][j] = 0;
+int magic(int ind, int mask, int prv) {
+    if(ind == n) return 0;
 
-    for(int ind = n - 1; ind >= 0; ind--) {
-        for(int mask = 0; mask < 32; mask++) {
-            for(int prv = 0; prv < 5; prv++) {
-                for(int op = 0; op <= 4; op++) {
-                    int cur = (mp[s[ind]] + op) % 5;
-                    if((cur != prv) && (mask & (1LL << cur))) continue;
-                    dp[ind][mask][prv] = min(dp[ind][mask][prv], op + dp[ind + 1][mask | (1LL << cur)][cur]);
-                }
-            }
-        }
+    int &ans = dp[ind][mask][prv];
+    if(~ans) return ans;
+    ans = INF;
+
+    for(int i = 0; i < 5; i++) {
+        if(mask >> i & 1) continue;
+        int op = i - mp(s[ind]);
+        if(op < 0) op += 5;
+        ans = min(ans, op + magic(ind + 1, mask | (1LL << i), i));
     }
 
-    cout<<dp[0][0][4]<<endl;
+    if(prv != 5) {
+        int op = prv - mp(s[ind]);
+        if(op < 0) op += 5;
+        ans = min(ans, op + magic(ind + 1, mask, prv));
+    }
+
+    return ans;
+}
+
+void solve() {
+    cin >> n >> s;
+    for(int i = 0; i < n; i++) for(int j = 0; j < 32; j++) for(int k = 0; k < 6; k++) dp[i][j][k] = -1;
+    cout<<magic(0, 0, 5)<<endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int t = 1; cin>>t;
+    int t = 1; 
+    cin>>t;
     for(int tc = 1; tc <= t; tc++) {
         // cout<<"Case "<<tc<<":";
         solve();
