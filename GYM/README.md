@@ -1,0 +1,2 @@
+# These need to be done by the end of 2025
+1. [CF GYM](https://codeforces.com/gyms?filterSeasonLowerBorder=2016-2017&filterSeasonUpperBorder=2025-2026&filterContestType=Training+Camp+Contest&filterContestFormat=ICPC&filterDurationLowerBorder=180&filterDurationUpperBorder=300&filterDifficultyLowerBorder=3&filterDifficultyUpperBorder=5&order=POPULARITY_DESC&additionalOrder=DIFFICULTY_ASC)

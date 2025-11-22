@@ -37,6 +37,7 @@ void solve() {
         }
         st.insert({y, x});
     }
+    
     cout << mn << endl;
 }
 

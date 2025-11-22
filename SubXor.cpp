@@ -15,11 +15,9 @@ const int N = 2e5 + 10;
 const int INF = 1e18 + 10;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int n, k;
-
 struct Trie {
     struct Node {
-        Node* link[2];
+        Node *link[2];
         int cnt;
     } *root;
 
@@ -27,55 +25,57 @@ struct Trie {
 
     void add(int x) {
         auto cur = root;
-        for(int i = 30; i >= 0; i--) {
-            int b = (x >> i) & 1;
-            if(!cur->link[b]) cur->link[b] = new Node();
-            cur = cur->link[b];
+        for(int i = 25; i >= 0; i--) {
+            int f = x >> i & 1;
+            if(!cur->link[f]) cur->link[f] = new Node();
+            cur = cur->link[f];
             cur->cnt++;
         }
     }
 
-    int get(int x) {
+    int get(int x, int k) {
         auto cur = root;
-        int ret = 0, num = 0;
-        for(int i = 30; i >= 0; i--) {
-            if(!cur) break;
-            int b = (x >> i) & 1;
-            if(cur->link[!b]) {
-                if(num + (1LL << i) < k) {
-                    if(cur->link[b]) ret += cur->link[b]->cnt;
-                    num |= (1LL << i);
-                    cur = cur->link[!b];
-                } else {
-                    cur = cur->link[b];
-                }
+        int ret = 0;
+
+        for(int i = 25; i >= 0; i--) {
+            int fx = x >> i & 1, fk = k >> i & 1;
+            if(fk == 1) {
+                if(cur->link[fx]) ret += cur->link[fx]->cnt;
+                if(!cur->link[!fx]) break;
+                cur = cur->link[!fx];
             } else {
-                cur = cur->link[b];
+                if(!cur->link[fx]) break;
+                cur = cur->link[fx];
             }
         }
-        if(cur) ret += cur->cnt;
+
         return ret;
     }
-} t;
+};
 
 void solve() {
-    cin >> n >> k;
+    int n, k; cin >> n >> k;
     vector<int> v(n), pf(n);
     for(int i = 0; i < n; i++) cin >> v[i], pf[i] = (i - 1 >= 0 ? pf[i - 1] : 0) ^ v[i];
-    int cnt = n * (n + 1) / 2;
-    t.add(0);
+
+    Trie tr;
+    tr.add(0);
+    
+    int ans = 0;
+
     for(int i = 0; i < n; i++) {
-        cnt -= t.get(pf[i]);
-        t.add(pf[i]);
+        ans += tr.get(pf[i], k);
+        tr.add(pf[i]);
     }
-    cout << cnt << endl;
+
+    cout << ans << endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int t = 1; // cin >> t;
+    int t = 1; cin >> t;
     for(int tc = 1; tc <= t; tc++) {
         // cerr << "Case " << tc << ": \n";
         solve();

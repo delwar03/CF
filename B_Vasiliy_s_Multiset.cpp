@@ -15,8 +15,6 @@ const int N = 2e5 + 10;
 const int INF = 1e18 + 10;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int n, k;
-
 struct Trie {
     struct Node {
         Node* link[2];
@@ -27,48 +25,52 @@ struct Trie {
 
     void add(int x) {
         auto cur = root;
-        for(int i = 30; i >= 0; i--) {
-            int b = (x >> i) & 1;
-            if(!cur->link[b]) cur->link[b] = new Node();
-            cur = cur->link[b];
-            cur->cnt++;
+        for(int i = 31; i >= 0; i--) {
+            int f = x >> i & 1;
+            if(!cur->link[f]) cur->link[f] = new Node();
+            cur = cur->link[f];
+            ++cur->cnt;
+        }
+    }
+
+    void del(int x) {
+        auto cur = root;
+        for(int i = 31; i >= 0; i--) {
+            int f = x >> i & 1;
+            cur = cur->link[f];
+            --cur->cnt;
         }
     }
 
     int get(int x) {
         auto cur = root;
-        int ret = 0, num = 0;
-        for(int i = 30; i >= 0; i--) {
-            if(!cur) break;
-            int b = (x >> i) & 1;
-            if(cur->link[!b]) {
-                if(num + (1LL << i) < k) {
-                    if(cur->link[b]) ret += cur->link[b]->cnt;
-                    num |= (1LL << i);
-                    cur = cur->link[!b];
-                } else {
-                    cur = cur->link[b];
-                }
+        int ret = 0;
+        for(int i = 31; i >= 0; i--) {
+            int f = x >> i & 1;
+            if(cur->link[!f] && cur->link[!f]->cnt) {
+                ret += (1LL << i);
+                cur = cur->link[!f];
             } else {
-                cur = cur->link[b];
+                cur = cur->link[f];
             }
         }
-        if(cur) ret += cur->cnt;
         return ret;
     }
-} t;
+} tr;
 
 void solve() {
-    cin >> n >> k;
-    vector<int> v(n), pf(n);
-    for(int i = 0; i < n; i++) cin >> v[i], pf[i] = (i - 1 >= 0 ? pf[i - 1] : 0) ^ v[i];
-    int cnt = n * (n + 1) / 2;
-    t.add(0);
-    for(int i = 0; i < n; i++) {
-        cnt -= t.get(pf[i]);
-        t.add(pf[i]);
+    tr.add(0);
+    int q; cin >> q;
+    while(q--) {
+        char t; int x; cin >> t >> x;
+        if(t == '+') {
+            tr.add(x);
+        } else if(t == '-') {
+            tr.del(x);
+        } else {
+            cout << tr.get(x) << endl;
+        }
     }
-    cout << cnt << endl;
 }
 
 signed main() {
